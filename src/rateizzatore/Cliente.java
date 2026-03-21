@@ -1,22 +1,13 @@
 package rateizzatore;
 
-public class Cliente {
-    private String nome;
-    private String cognome;
+import java.io.Serializable;
+
+public class Cliente extends Utente implements Serializable {
     private ContoCorrente conto;
 
-    public Cliente(String nome, String cognome, ContoCorrente conto) {
-        this.nome = nome;
-        this.cognome = cognome;
+    public Cliente(String nome, String cognome, String password, ContoCorrente conto) {
+        super(nome, cognome, password);
         this.conto = conto;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getCognome() {
-        return cognome;
     }
 
     public ContoCorrente getConto() {
