@@ -31,6 +31,7 @@ public class MainApp extends JFrame implements ActionListener {
     BasePanel actualPanel;
     LoginAmministratorePanel loginAdminPanel;
     LoginClientePanel loginClientePanel;
+    
     public MainApp() {
         setTitle("Menù banca");
         setSize(500, 400);
@@ -68,13 +69,13 @@ public class MainApp extends JFrame implements ActionListener {
         JLabel lblUtente = new JLabel("Inserire il cognome di un cliente nel nostro database");
         btnCliente = new JButton("Accedi come cliente");
         btnAmministratore = new JButton("Accedi come amministratore");
-        JPanel pnlMenuIniziale = new JPanel();
-        
+
 //        pnlCentro.add(lblUtente);
 //        pnlCentro.add(txtUtente);
+        JPanel pnlMenuIniziale = new JPanel();
         pnlMenuIniziale.add(btnAmministratore);
         pnlMenuIniziale.add(btnCliente);
-        pnlCentro.add(pnlMenuIniziale, "MENU");
+        pnlCentro.add("MENU", pnlMenuIniziale);
         add(pnlCentro, BorderLayout.CENTER);
         
         // sud

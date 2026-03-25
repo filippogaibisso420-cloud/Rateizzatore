@@ -1,10 +1,12 @@
 package rateizzatore;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -13,33 +15,60 @@ import javax.swing.JTextField;
  * di login
  */
 abstract public class LoginPanel extends BasePanel implements ActionListener, MouseListener {
-    boolean clickedOnce=false;
-    JTextField txtNome = new JTextField("nome e cognome", 20);
-    JPasswordField password = new JPasswordField("Password:",20);
-
+    boolean clickedPassword;
+    boolean clickedNome;
+    CardLayout cardLayout;
+    JPanel panel;
+    JTextField txtNome;
+    JPasswordField password;
+    
+    
     public LoginPanel() {
+        clickedPassword = false;
         setBackground(new Color(157, 151, 47));
         setLayout(new BorderLayout());
+        cardLayout = new CardLayout(10, 10);
+        panel = new JPanel(cardLayout);
+        
+        txtNome = new JTextField("nome e cognome", 20);
+        password = new JPasswordField("Password:",20);
         password.setEchoChar((char) 0);
-        password.addActionListener(this);
+        aggiungiListener();
+        
+    }
+    
+    private void aggiungiListener() {
         txtNome.addActionListener(this);
+        password.addActionListener(this);
+        
+        txtNome.addMouseListener(this);
         password.addMouseListener(this);
     }
-
+    
     @Override
     void reset() {
         txtNome.setText("nome e cognome");
         password.setText("Password:");
+        password.setEchoChar((char) 0);
+        
+        clickedNome = false;
+        clickedPassword = false;
     }
     
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(!clickedOnce) {
-            password.setText("");
-            password.setEchoChar('*');
-            clickedOnce=true;
+        if(e.getSource() == txtNome) {
+            if(!clickedNome) {
+               txtNome.setText("");
+               clickedNome = true;
+            }
+        } else if(e.getSource() == password) {
+            if(!clickedPassword) {
+                password.setText("");
+                password.setEchoChar('*');
+                clickedPassword = true;
+            }            
         }
-        
     }
 
     @Override
@@ -57,4 +86,6 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
     @Override
     public void mouseExited(MouseEvent e) {
     }
+
+    
 }

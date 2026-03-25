@@ -29,13 +29,16 @@ public class Movimento  implements Serializable {
         ResourceBundle rb = ResourceBundle.getBundle("bundle.app");
         double commissione = Double.parseDouble(rb.getString("commissione"));
         double tassoInteresse = Double.parseDouble(rb.getString("tassoInteresse"));
+        
         double interesseMensile = tassoInteresse/100/12;
         BigDecimal bd1 = new BigDecimal(interesseMensile);
         interesseMensile = bd1.setScale(2, RoundingMode.HALF_UP).doubleValue();
+        
         double temp = Math.pow((1+interesseMensile), -nRate);
         double pagamentoMensile = importo * (interesseMensile/(1-temp));
         BigDecimal bd2 = new BigDecimal(pagamentoMensile);
         pagamentoMensile = bd2.setScale(2, RoundingMode.HALF_UP).doubleValue();
+        
         Rata[] rate = new Rata[nRate];
         for(int i=0; i<rate.length; i++) {
             LocalDate dataScadenza = LocalDate.now().plusMonths(1+i).with(TemporalAdjusters.lastDayOfMonth());
@@ -64,6 +67,4 @@ public class Movimento  implements Serializable {
     public LocalDate getDataValuta() {
         return dataValuta;
     }
-    
-    
 }
