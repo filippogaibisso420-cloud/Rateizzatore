@@ -7,5 +7,11 @@ import javax.swing.JPanel;
  * varie schermate dell'applicazione
  */
 abstract public class BasePanel extends JPanel {
+    protected MainApp parent;
+    
+    public BasePanel(MainApp parent) {
+        this.parent = parent;
+    }
+
     abstract void reset();
 }

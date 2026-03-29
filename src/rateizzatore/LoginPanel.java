@@ -2,7 +2,6 @@ package rateizzatore;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,17 +14,19 @@ import javax.swing.JTextField;
  * di login
  */
 abstract public class LoginPanel extends BasePanel implements ActionListener, MouseListener {
-    boolean clickedPassword;
-    boolean clickedNome;
-    CardLayout cardLayout;
-    JPanel panel;
-    JTextField txtNome;
-    JPasswordField password;
+    protected boolean clickedPassword;
+    protected boolean clickedNome;
+    protected CardLayout cardLayout;
+    protected JPanel panel;
+    protected JTextField txtNome;
+    protected JPasswordField password;
     
     
-    public LoginPanel() {
+    public LoginPanel(MainApp parent) {
+        super(parent);
         clickedPassword = false;
-        setBackground(new Color(157, 151, 47));
+        clickedNome = false;
+        
         setLayout(new BorderLayout());
         cardLayout = new CardLayout(10, 10);
         panel = new JPanel(cardLayout);

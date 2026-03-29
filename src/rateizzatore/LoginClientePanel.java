@@ -12,11 +12,13 @@ import javax.swing.JPanel;
  * per il login di un cliente
  */
 class LoginClientePanel extends LoginPanel implements ActionListener {
-    JLabel lblTesto = new JLabel("Inserire credenziali cliente");
+    private JLabel lblTesto;
     
-    public LoginClientePanel() {
-        super();
+    public LoginClientePanel(MainApp parent) {
+        super(parent);
+        lblTesto = new JLabel("Inserire credenziali cliente");
         lblTesto.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 15));
+        
         JPanel panel = new JPanel();
         panel.add(lblTesto);
         panel.add(txtNome);

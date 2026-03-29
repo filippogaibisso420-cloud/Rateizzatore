@@ -1,8 +1,6 @@
 package rateizzatore;
 
-import java.io.Serializable;
-
-public class Cliente extends Utente implements Serializable {
+public class Cliente extends Utente {
     private ContoCorrente conto;
 
     public Cliente(String nome, String cognome, String password, ContoCorrente conto) {

@@ -4,10 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,14 +14,14 @@ import javax.swing.JPanel;
  * per il login di un amministratore
  */
 public class LoginAmministratorePanel extends LoginPanel implements ActionListener {
-    JLabel lblTesto;
-    JButton btnAggiungi;
-    BasePanel actualPanel;
-    AmministratorePanel adminPanel;
-    CreaAmministratorePanel creaAdminPanel;
+    private JLabel lblTesto;
+    private JButton btnAggiungi;
+    private BasePanel actualPanel;
+    private AmministratorePanel adminPanel;
+    private CreaAmministratorePanel creaAdminPanel;
     
-    public LoginAmministratorePanel() {
-        super();
+    public LoginAmministratorePanel(MainApp parent) {
+        super(parent);
         creaGUI();
     }
     
@@ -52,7 +48,7 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
         pnlMid.add(pnlCentro);
         pnlMid.add(pnlSud);
         
-        panel.add("LOGIN", pnlMid);
+        panel.add("LOGIN_ADMIN", pnlMid);
         add(panel, BorderLayout.CENTER);
     }
     
@@ -65,10 +61,11 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnAggiungi) {
             if(creaAdminPanel == null) {
-                creaAdminPanel = new CreaAmministratorePanel();
+                creaAdminPanel = new CreaAmministratorePanel(parent);
                 panel.add(creaAdminPanel.getClass().getName(), creaAdminPanel);
             }
             actualPanel = creaAdminPanel;
+            
         } else {
             if(password.getPassword() == null || "Password".equals(new String(password.getPassword())) 
                 || txtNome.getText() == null || "nome e cognome".equals(txtNome.getText())) return;
@@ -78,32 +75,16 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
             String nome = nominativo[0];
             String cognome = nominativo[1];
             Amministratore admin = new Amministratore(nome, cognome, psword);
-
-            boolean eof = false;
-            try(FileInputStream fos = new FileInputStream("/dati/listaAmministratori.dat");
-                    ObjectInputStream in = new ObjectInputStream(fos);) {
-                boolean trovato = false;
-                while(!eof && !trovato) {
-                    Amministratore temp = (Amministratore)in.readObject();
-                    if(admin.equals(temp)) {
-                        if(adminPanel == null) {
-                            adminPanel = new AmministratorePanel();
-                            panel.add(adminPanel.getClass().getName(), adminPanel);
-                        }
-                        actualPanel = adminPanel;
-                        trovato = true;
-                    }
+            
+            if(parent.getAmministratori().contains(admin)) {
+                if(adminPanel == null) {
+                    adminPanel = new AmministratorePanel(parent);
+                    panel.add(adminPanel.getClass().getName(), adminPanel);
                 }
-
-                if(!trovato) JOptionPane.showMessageDialog(this, "Credenziali errate",
+                actualPanel = adminPanel;
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenziali errate",
                         "Errore inserimento credenziali", JOptionPane.ERROR_MESSAGE);
-
-            } catch (EOFException ex) {
-                eof=true;
-            } catch (IOException ex) {
-                System.out.println("Errore nell'apertura del file");
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Classe cliente non trovata");
             }
         }
         actualPanel.reset();         

@@ -1,7 +1,7 @@
 package rateizzatore;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,22 +18,29 @@ import javax.swing.JTextField;
  */
 public class CreaAmministratorePanel extends BasePanel implements ActionListener, 
         MouseListener {
-    boolean clickedNome;
-    boolean clickedConferma;
-    boolean clickedPassword;
-    boolean clickedPasswordBanca;
-    JTextField txtNome;
-    JPasswordField password;
-    JPasswordField conferma;
-    JPasswordField passwordBanca;
+    private boolean clickedNome;
+    private boolean clickedConferma;
+    private boolean clickedPassword;
+    private boolean clickedPasswordBanca;
+    private CardLayout cardLayout;
+    private JPanel panel;
+    private JTextField txtNome;
+    private JPasswordField password;
+    private JPasswordField conferma;
+    private JPasswordField passwordBanca;
+    private BasePanel actualPanel;
+    private AmministratorePanel adminPanel;
 
-    public CreaAmministratorePanel() {
+    public CreaAmministratorePanel(MainApp parent) {
+        super(parent);
         clickedNome = false;
         clickedConferma = false;
         clickedPassword = false;
         clickedPasswordBanca = false;
-        setBackground(new Color(157, 151, 47));
+        
         setLayout(new BorderLayout());
+        cardLayout = new CardLayout(10, 10);
+        panel = new JPanel(cardLayout);
         creaGUI();
         aggiungiListener();
     }
@@ -56,7 +63,6 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
     }
 
     private void creaGUI() {
-        JPanel panel = new JPanel();
         txtNome = new JTextField("Inserire nome e cognome del nuovo dipendente", 30);
         
         password = new JPasswordField("Inserire nuova password:", 30);
@@ -68,11 +74,12 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         passwordBanca = new JPasswordField("Autorizza la registrazione con la password della banca:", 30);
         passwordBanca.setEchoChar((char) 0);
         
-        panel.add(txtNome);
-        panel.add(password);
-        panel.add(conferma);
-        panel.add(passwordBanca);
-        panel.setBackground(new Color(157, 151, 47));
+        JPanel pnlMid = new JPanel();
+        pnlMid.add(txtNome);
+        pnlMid.add(password);
+        pnlMid.add(conferma);
+        pnlMid.add(passwordBanca);
+        panel.add("CREATE_ADMIN", pnlMid);
         add(panel);
     }
     
@@ -116,8 +123,31 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         }
         
         if(!error) {
+            String[] nominativo = new String[2];
+            nominativo = txtNome.getText().split(" ");
+            String nome = nominativo[0];
+            String cognome = nominativo[1];
+            String password = new String(this.password.getPassword());
+            Amministratore admin = new Amministratore(nome, cognome, password);
+            
+            boolean aggiunto = parent.aggiungiAmministratore(admin);
+            if(aggiunto) {
+                JOptionPane.showMessageDialog(this, "Amministratore "
+                    + "creato con successo", "registrazione a buon fine",
+                    JOptionPane.INFORMATION_MESSAGE);
+                
+                if(adminPanel == null) {
+                    adminPanel = new AmministratorePanel(parent);
+                    panel.add(adminPanel.getClass().getName(), adminPanel);
+                }
+                actualPanel = adminPanel;
+            }
+            
             
         }
+        
+        actualPanel.reset();         
+        cardLayout.show(panel, actualPanel.getClass().getName());
     }
 
     @Override
@@ -151,18 +181,34 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         }
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }
