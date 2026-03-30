@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ResourceBundle;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -22,12 +23,16 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
     private boolean clickedConferma;
     private boolean clickedPassword;
     private boolean clickedPasswordBanca;
+    
     private CardLayout cardLayout;
     private JPanel panel;
+
     private JTextField txtNome;
     private JPasswordField password;
     private JPasswordField conferma;
     private JPasswordField passwordBanca;
+    private JButton btnTorna;
+    
     private BasePanel actualPanel;
     private AmministratorePanel adminPanel;
 
@@ -74,11 +79,14 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         passwordBanca = new JPasswordField("Autorizza la registrazione con la password della banca:", 30);
         passwordBanca.setEchoChar((char) 0);
         
+        btnTorna = new JButton("Torna indietro");
+        
         JPanel pnlMid = new JPanel();
         pnlMid.add(txtNome);
         pnlMid.add(password);
         pnlMid.add(conferma);
         pnlMid.add(passwordBanca);
+        pnlMid.add(btnTorna, BorderLayout.SOUTH);
         panel.add("CREATE_ADMIN", pnlMid);
         add(panel);
     }
@@ -88,6 +96,7 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         password.addActionListener(this);
         conferma.addActionListener(this);
         passwordBanca.addActionListener(this);
+        btnTorna.addActionListener(this);
         
         txtNome.addMouseListener(this);
         password.addMouseListener(this);
@@ -97,53 +106,55 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(password.getPassword() == null || "Inserire nuova password:".equals(new String(password.getPassword())) 
+        if(e.getSource() == btnTorna) {
+            parent.tornaAlMenu();
+        } else {
+            if(password.getPassword() == null || "Inserire nuova password:".equals(new String(password.getPassword())) 
                 || conferma.getPassword() == null 
                 || "Inserire nuovamente password:".equals(new String(conferma.getPassword()))
                 || passwordBanca.getPassword() == null
                 || "Autorizza la registrazione con la password della banca".equals(new String(passwordBanca.getPassword()))
                 || txtNome.getText() == null || "nome e cognome".equals(txtNome.getText())) return;
         
-        boolean error = false;
-        String temp = new String(password.getPassword());
-        if(!temp.equals(new String(conferma.getPassword()))) {
-            error = true;
-            JOptionPane.showMessageDialog(this,
-                    "La password inserita e la password di conferma sono diverse",
-                    "Password sbagliata", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        ResourceBundle rb = ResourceBundle.getBundle("bundle.app");
-        String passwordSistema = rb.getString("password");
-        if(!passwordSistema.equals(new String(passwordBanca.getPassword()))) {
-            error = true;
-            JOptionPane.showMessageDialog(this,
-                    "La password della banca è errata",
-                    "Password banca sbagliata", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        if(!error) {
-            String[] nominativo = new String[2];
-            nominativo = txtNome.getText().split(" ");
-            String nome = nominativo[0];
-            String cognome = nominativo[1];
-            String password = new String(this.password.getPassword());
-            Amministratore admin = new Amministratore(nome, cognome, password);
-            
-            boolean aggiunto = parent.aggiungiAmministratore(admin);
-            if(aggiunto) {
-                JOptionPane.showMessageDialog(this, "Amministratore "
-                    + "creato con successo", "registrazione a buon fine",
-                    JOptionPane.INFORMATION_MESSAGE);
-                
-                if(adminPanel == null) {
-                    adminPanel = new AmministratorePanel(parent);
-                    panel.add(adminPanel.getClass().getName(), adminPanel);
-                }
-                actualPanel = adminPanel;
+            boolean error = false;
+            String temp = new String(password.getPassword());
+            if(!temp.equals(new String(conferma.getPassword()))) {
+                error = true;
+                JOptionPane.showMessageDialog(this,
+                        "La password inserita e la password di conferma sono diverse",
+                        "Password sbagliata", JOptionPane.ERROR_MESSAGE);
             }
-            
-            
+
+            ResourceBundle rb = ResourceBundle.getBundle("bundle.app");
+            String passwordSistema = rb.getString("password");
+            if(!passwordSistema.equals(new String(passwordBanca.getPassword()))) {
+                error = true;
+                JOptionPane.showMessageDialog(this,
+                        "La password della banca è errata",
+                        "Password banca sbagliata", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if(!error) {
+                String[] nominativo = new String[2];
+                nominativo = txtNome.getText().split(" ");
+                String nome = nominativo[0];
+                String cognome = nominativo[1];
+                String password = new String(this.password.getPassword());
+                Amministratore admin = new Amministratore(nome, cognome, password);
+
+                boolean aggiunto = parent.aggiungiAmministratore(admin);
+                if(aggiunto) {
+                    JOptionPane.showMessageDialog(this, "Amministratore "
+                        + "creato con successo", "registrazione a buon fine",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                    if(adminPanel == null) {
+                        adminPanel = new AmministratorePanel(parent);
+                        panel.add(adminPanel.getClass().getName(), adminPanel);
+                    }
+                    actualPanel = adminPanel;
+                }
+            }
         }
         
         actualPanel.reset();         

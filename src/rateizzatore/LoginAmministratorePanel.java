@@ -14,11 +14,10 @@ import javax.swing.JPanel;
  * per il login di un amministratore
  */
 public class LoginAmministratorePanel extends LoginPanel implements ActionListener {
-    private JLabel lblTesto;
     private JButton btnAggiungi;
-    private BasePanel actualPanel;
     private AmministratorePanel adminPanel;
     private CreaAmministratorePanel creaAdminPanel;
+    
     
     public LoginAmministratorePanel(MainApp parent) {
         super(parent);
@@ -27,7 +26,7 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
     
     private void creaGUI() {
         // nord
-        lblTesto = new JLabel("Inserire credenziali amministratore");
+        JLabel lblTesto = new JLabel("Inserire credenziali amministratore");
         lblTesto.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 15));
         JPanel pnlNord = new JPanel();
         pnlNord.add(lblTesto);
@@ -38,10 +37,11 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
         pnlCentro.add(password);
         
         // sud
-        btnAggiungi = new JButton("Registra nuovo amministratore");
         JPanel pnlSud = new JPanel();
-        pnlSud.add(btnAggiungi);
+        btnAggiungi = new JButton("Registra nuovo amministratore");
         btnAggiungi.addActionListener(this);
+        pnlSud.add(btnAggiungi);
+        pnlSud.add(btnTorna);
         
         JPanel pnlMid = new JPanel();
         pnlMid.add(pnlNord);
@@ -55,10 +55,12 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
     @Override
     void reset() {
         super.reset();
+        cardLayout.show(panel, "LOGIN_ADMIN");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        super.actionPerformed(e);
         if(e.getSource() == btnAggiungi) {
             if(creaAdminPanel == null) {
                 creaAdminPanel = new CreaAmministratorePanel(parent);
@@ -67,7 +69,7 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
             actualPanel = creaAdminPanel;
             
         } else {
-            if(password.getPassword() == null || "Password".equals(new String(password.getPassword())) 
+            if(password.getPassword() == null || "Password:".equals(new String(password.getPassword())) 
                 || txtNome.getText() == null || "nome e cognome".equals(txtNome.getText())) return;
         
             String psword = new String(password.getPassword());

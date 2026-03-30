@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -27,6 +28,7 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
     private JTextField txtCodiceConto;
     private JTextField txtPlafond;
     private JTextField txtCodiceCarta;
+    private JButton btnTorna;
     
     public CreaContoPanel(MainApp parent) {
         super(parent);
@@ -56,7 +58,13 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
         pnlCentro.add(txtCodiceConto);
         pnlCentro.add(txtPlafond);
         pnlCentro.add(txtCodiceCarta);
+        
+        JPanel pnlSud = new JPanel();
+        btnTorna = new JButton("Torna indietro");
+        pnlSud.add(btnTorna);
+        
         add(pnlCentro, BorderLayout.CENTER);
+        add(pnlSud, BorderLayout.SOUTH);
     }
 
     private void aggiungiListener() {
@@ -65,6 +73,7 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
         txtCodiceConto.addActionListener(this);
         txtPlafond.addActionListener(this);
         txtCodiceCarta.addActionListener(this);
+        btnTorna.addActionListener(this);
         
         txtNome.addMouseListener(this);
         password.addMouseListener(this);
@@ -91,7 +100,10 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(txtNome.getText() == null || "A chi verrà intestato questo conto?".equals(txtNome.getText())
+        if(e.getSource() == btnTorna) {
+            
+        } else {
+            if(txtNome.getText() == null || "A chi verrà intestato questo conto?".equals(txtNome.getText())
                 || password.getPassword() == null 
                 || "Inserire la nuova password del conto".equals(new String(password.getPassword())) 
                 || txtCodiceConto.getText() == null
@@ -102,27 +114,27 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
                 || "Inserire il codice della prima carta da aggiungere al conto".equals(txtCodiceCarta.getText())
             ) return;
         
-        String[] nominativo = new String[2];
-        nominativo = txtNome.getText().split(" ");
-        String nome = nominativo[0];
-        String cognome = nominativo[1];
-        String password = new String(this.password.getPassword());
-        String codiceConto = txtCodiceConto.getText();
-        double plafond = Double.parseDouble(txtPlafond.getText());
-        String codiceCarta = txtCodiceCarta.getText();
-            
-        CartaCredito carta = new CartaCredito(codiceCarta);
-        ContoCorrente conto = new ContoCorrente(codiceConto, carta, plafond);
-        Cliente cliente = new Cliente(nome, cognome, password, conto);
-            
-        boolean aggiunto = parent.aggiungiCliente(cliente);
-           
-        if(aggiunto) {
-            JOptionPane.showMessageDialog(this, "Cliente creato "
-                + "con successo", "registrazione a buon fine",
-                JOptionPane.INFORMATION_MESSAGE);
+            String[] nominativo = new String[2];
+            nominativo = txtNome.getText().split(" ");
+            String nome = nominativo[0];
+            String cognome = nominativo[1];
+            String password = new String(this.password.getPassword());
+            String codiceConto = txtCodiceConto.getText();
+            double plafond = Double.parseDouble(txtPlafond.getText());
+            String codiceCarta = txtCodiceCarta.getText();
+
+            CartaCredito carta = new CartaCredito(codiceCarta);
+            ContoCorrente conto = new ContoCorrente(codiceConto, carta, plafond);
+            Cliente cliente = new Cliente(nome, cognome, password, conto);
+
+            boolean aggiunto = parent.aggiungiCliente(cliente);
+
+            if(aggiunto) {
+                JOptionPane.showMessageDialog(this, "Cliente creato "
+                    + "con successo", "registrazione a buon fine",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        
         CardLayout cardLayout = (CardLayout)this.getParent().getLayout();
         cardLayout.show(this.getParent(), "AMMINISTRATORE");
     }

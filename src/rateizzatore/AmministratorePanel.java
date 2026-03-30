@@ -11,7 +11,7 @@ import javax.swing.JPanel;
  * Classe che implementa e visualizza le <br>
  * funzioni di un amministratore
  */
-class AmministratorePanel extends BasePanel implements ActionListener {
+public class AmministratorePanel extends BasePanel implements ActionListener {
     private CardLayout cardLayout;
     private JPanel panel;
     private JButton btnTorna;

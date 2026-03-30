@@ -19,11 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class MainApp extends JFrame implements ActionListener {
     private JPanel pnlCentro;
-    private JTextField txtUtente;
     private JButton btnCliente;
     private JButton btnAmministratore;
     
@@ -41,7 +39,7 @@ public class MainApp extends JFrame implements ActionListener {
         if(clienti == null) clienti = new ArrayList<>();
         if(amministratori == null) amministratori = new ArrayList<>();
         
-        setTitle("Menù banca");
+        setTitle("NOVA AURUM S.p.A");
         setSize(500, 400);
 
         cardLayout = new CardLayout(10, 10);
@@ -70,16 +68,11 @@ public class MainApp extends JFrame implements ActionListener {
         pnlNord.add(lblTitolo);
         add(pnlNord, BorderLayout.NORTH);
         
-        
         // centro
         pnlCentro = new JPanel(cardLayout);
-        txtUtente = new JTextField("Cliente", 25);
-        JLabel lblUtente = new JLabel("Inserire il cognome di un cliente nel nostro database");
         btnCliente = new JButton("Accedi come cliente");
         btnAmministratore = new JButton("Accedi come amministratore");
 
-//        pnlCentro.add(lblUtente);
-//        pnlCentro.add(txtUtente);
         JPanel pnlMenuIniziale = new JPanel();
         pnlMenuIniziale.add(btnAmministratore);
         pnlMenuIniziale.add(btnCliente);
@@ -91,38 +84,19 @@ public class MainApp extends JFrame implements ActionListener {
     }
 
     private void aggiungiListener() {
-        txtUtente.addActionListener(this);
         btnCliente.addActionListener(this);
         btnAmministratore.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == txtUtente) {
-            if(txtUtente.getText() == null || txtUtente.getText() == "Cliente") return;
-            boolean eof=false;
-            try(FileInputStream fos = new FileInputStream("dati/ListaClienti.dat"); 
-                    ObjectInputStream in = new ObjectInputStream(fos)) {
-                while(!eof) {
-                    Cliente tmp = (Cliente)in.readObject();
-                    if(txtUtente.getText().contains(tmp.getCognome())) {
-                        
-                    }
-                }
-            } catch (EOFException ex) {
-                eof=true;
-            } catch (IOException ex) {
-                System.out.println("Errore nell'apertura del file");
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Classe cliente non trovata all'interno del file");
+        if(e.getSource() == btnCliente) {
+            if (loginClientePanel == null) {
+                loginClientePanel = new LoginClientePanel(this);
+                pnlCentro.add(loginClientePanel.getClass().getName(), loginClientePanel);
             }
-        } else if(e.getSource() == btnCliente) {
-            try(FileOutputStream fos = new FileOutputStream("dati/ListaClienti.dat"); 
-                    ObjectOutputStream out = new ObjectOutputStream(fos)) {
-                
-            } catch (IOException ex) {
-                System.out.println("Errore nell'apertura del file");
-            }
+            actualPanel = loginClientePanel;
+            
         } else if(e.getSource() == btnAmministratore) {
             if (loginAdminPanel == null) {
                 loginAdminPanel = new LoginAmministratorePanel(this);

@@ -2,9 +2,11 @@ package rateizzatore;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -20,6 +22,8 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
     protected JPanel panel;
     protected JTextField txtNome;
     protected JPasswordField password;
+    protected JButton btnTorna;
+    protected BasePanel actualPanel;
     
     
     public LoginPanel(MainApp parent) {
@@ -34,6 +38,7 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
         txtNome = new JTextField("nome e cognome", 20);
         password = new JPasswordField("Password:",20);
         password.setEchoChar((char) 0);
+        btnTorna = new JButton("Torna indietro");
         aggiungiListener();
         
     }
@@ -41,6 +46,7 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
     private void aggiungiListener() {
         txtNome.addActionListener(this);
         password.addActionListener(this);
+        btnTorna.addActionListener(this);
         
         txtNome.addMouseListener(this);
         password.addMouseListener(this);
@@ -54,6 +60,13 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
         
         clickedNome = false;
         clickedPassword = false;
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == btnTorna) {
+            parent.tornaAlMenu();
+        }
     }
     
     @Override
