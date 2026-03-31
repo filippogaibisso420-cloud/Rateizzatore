@@ -2,9 +2,11 @@ package rateizzatore;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -12,6 +14,7 @@ import javax.swing.JPanel;
  * funzioni di un amministratore
  */
 public class AmministratorePanel extends BasePanel implements ActionListener {
+    private Amministratore admin;
     private CardLayout cardLayout;
     private JPanel panel;
     private JButton btnTorna;
@@ -19,8 +22,9 @@ public class AmministratorePanel extends BasePanel implements ActionListener {
     private CreaContoPanel creaContoPanel;
     private BasePanel actualPanel;
     
-    public AmministratorePanel(MainApp parent) {
+    public AmministratorePanel(MainApp parent, Amministratore admin) {
         super(parent);
+        this.admin = admin;
         setLayout(new BorderLayout());
         cardLayout = new CardLayout(10, 10);
         creaGUI();
@@ -29,20 +33,20 @@ public class AmministratorePanel extends BasePanel implements ActionListener {
     private void creaGUI() {
         panel = new JPanel(cardLayout);
         
-        JPanel pnlCentro = new JPanel();
+        JLabel lblTesto = new JLabel("Benvenuto/a " + admin.getNome() + " " + admin.getCognome());
+        lblTesto.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 22));
+        
         btnCliente = new JButton("Crea un nuovo conto corrente");
         btnCliente.addActionListener(this);
-        pnlCentro.add(btnCliente);
         
-        JPanel pnlSud = new JPanel();
-        btnTorna = new JButton("Torna indietro");
+        btnTorna = new JButton("Log Out");
         btnTorna.addActionListener(this);
-        pnlSud.add(btnTorna);
         
-        JPanel pnlMid = new JPanel();
-        pnlMid.add(pnlCentro, BorderLayout.CENTER);
-        pnlMid.add(pnlSud, BorderLayout.SOUTH);
-        panel.add("AMMINISTRATORE", pnlMid);
+        JPanel pnlCentro = new JPanel();
+        pnlCentro.add(lblTesto, BorderLayout.NORTH);
+        pnlCentro.add(btnCliente, BorderLayout.CENTER);
+        pnlCentro.add(btnTorna, BorderLayout.SOUTH);
+        panel.add("AMMINISTRATORE", pnlCentro);
         add(panel);
     }
     

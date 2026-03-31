@@ -149,7 +149,7 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
                         JOptionPane.INFORMATION_MESSAGE);
 
                     if(adminPanel == null) {
-                        adminPanel = new AmministratorePanel(parent);
+                        adminPanel = new AmministratorePanel(parent, admin);
                         panel.add(adminPanel.getClass().getName(), adminPanel);
                     }
                     actualPanel = adminPanel;

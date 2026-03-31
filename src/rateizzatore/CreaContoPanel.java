@@ -60,7 +60,7 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
         pnlCentro.add(txtCodiceCarta);
         
         JPanel pnlSud = new JPanel();
-        btnTorna = new JButton("Torna indietro");
+        btnTorna = new JButton("Torna al menù");
         pnlSud.add(btnTorna);
         
         add(pnlCentro, BorderLayout.CENTER);

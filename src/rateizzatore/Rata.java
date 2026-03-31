@@ -9,12 +9,12 @@ import java.time.LocalDate;
 public class Rata implements Serializable {
     private LocalDate dataScadenza;
     private double importo;
-    private double commisione;
+    private double commissione;
 
     public Rata(LocalDate dataScadenza, double importo, double commisione) {
         this.dataScadenza = dataScadenza;
         this.importo = importo;
-        this.commisione = commisione;
+        this.commissione = commisione;
     }
 
     public LocalDate getDataScadenza() {
@@ -25,8 +25,8 @@ public class Rata implements Serializable {
         return importo;
     }
 
-    public double getCommisione() {
-        return commisione;
+    public double getCommissione() {
+        return commissione;
     }
     
 }

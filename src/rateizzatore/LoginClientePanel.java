@@ -33,7 +33,7 @@ public class LoginClientePanel extends LoginPanel implements ActionListener {
     @Override
     void reset() {
         super.reset();
-        clientPanel = null;
+        cardLayout.show(panel, "LOGIN_CLIENT");
     }
 
     @Override
@@ -52,10 +52,12 @@ public class LoginClientePanel extends LoginPanel implements ActionListener {
         ArrayList<Cliente> clienti = parent.getClienti();
         if(clienti.contains(client)) {
             int i = clienti.indexOf(client);
-            client = null;
             client = clienti.get(i);
-            clientPanel = new ClientePanel(parent, client);
-            panel.add(clientPanel.getClass().getName(), clientPanel);
+            
+            if(clientPanel == null) {
+                clientPanel = new ClientePanel(parent, client);
+                panel.add(clientPanel.getClass().getName(), clientPanel);
+            }
             actualPanel = clientPanel;
         } else {
             JOptionPane.showMessageDialog(this, "Credenziali errate",

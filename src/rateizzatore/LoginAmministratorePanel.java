@@ -80,7 +80,7 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
             
             if(parent.getAmministratori().contains(admin)) {
                 if(adminPanel == null) {
-                    adminPanel = new AmministratorePanel(parent);
+                    adminPanel = new AmministratorePanel(parent, admin);
                     panel.add(adminPanel.getClass().getName(), adminPanel);
                 }
                 actualPanel = adminPanel;
