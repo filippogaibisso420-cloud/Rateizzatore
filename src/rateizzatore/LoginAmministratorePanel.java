@@ -18,7 +18,12 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
     private AmministratorePanel adminPanel;
     private CreaAmministratorePanel creaAdminPanel;
     
-    
+    /**
+     * Costruttore della classe LoginAmministratorePanel. <br>
+     * Inizializza il pannello per l'autenticazione degli amministratori <br>
+     * richiamando la configurazione della GUI specifica.
+     * @param parent il frame principale dell'applicazione
+     */
     public LoginAmministratorePanel(MainApp parent) {
         super(parent);
         creaGUI();
@@ -58,38 +63,48 @@ public class LoginAmministratorePanel extends LoginPanel implements ActionListen
         cardLayout.show(panel, "LOGIN_ADMIN");
     }
 
+    /**
+     * Gestisce l'autenticazione dell'amministratore e la navigazione. <br>
+     * Verifica le credenziali inserite confrontandole con l'elenco degli <br>
+     * amministratori registrati o permette l'accesso alla creazione di un nuovo profilo.
+     * @param e l'evento generato dalla pressione di un pulsante o dall'invio nei campi
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if(e.getSource() == btnAggiungi) {
-            if(creaAdminPanel == null) {
-                creaAdminPanel = new CreaAmministratorePanel(parent);
-                panel.add(creaAdminPanel.getClass().getName(), creaAdminPanel);
-            }
-            actualPanel = creaAdminPanel;
-            
+        if(e.getSource() == btnTorna) {
+            parent.tornaAlMenu();    
         } else {
-            if(password.getPassword() == null || "Password:".equals(new String(password.getPassword())) 
-                || txtNome.getText() == null || "nome e cognome".equals(txtNome.getText())) return;
-        
-            String psword = new String(password.getPassword());
-            String[] nominativo = txtNome.getText().split(" ");
-            String nome = nominativo[0];
-            String cognome = nominativo[1];
-            Amministratore admin = new Amministratore(nome, cognome, psword);
-            
-            if(parent.getAmministratori().contains(admin)) {
-                if(adminPanel == null) {
-                    adminPanel = new AmministratorePanel(parent, admin);
-                    panel.add(adminPanel.getClass().getName(), adminPanel);
+            if(e.getSource() == btnAggiungi) {
+                if(creaAdminPanel == null) {
+                    creaAdminPanel = new CreaAmministratorePanel(parent);
+                    panel.add(creaAdminPanel.getClass().getName(), creaAdminPanel);
                 }
-                actualPanel = adminPanel;
+                actualPanel = creaAdminPanel;
+
             } else {
-                JOptionPane.showMessageDialog(this, "Credenziali errate",
-                        "Errore inserimento credenziali", JOptionPane.ERROR_MESSAGE);
+                if(password.getPassword() == null || "Password:".equals(new String(password.getPassword())) 
+                    || txtNome.getText() == null || "nome e cognome".equals(txtNome.getText())) return;
+
+                String psword = new String(password.getPassword());
+                String[] nominativo = txtNome.getText().split(" ");
+                String nome = nominativo[0];
+                String cognome = nominativo[1];
+                Amministratore admin = new Amministratore(nome, cognome, psword);
+
+                if(parent.getAmministratori().contains(admin)) {
+                    if(adminPanel == null) {
+                        adminPanel = new AmministratorePanel(parent, admin);
+                        panel.add(adminPanel.getClass().getName(), adminPanel);
+                    }
+                    actualPanel = adminPanel;
+                } else {
+                    JOptionPane.showMessageDialog(this, "Credenziali errate",
+                            "Errore inserimento credenziali", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
-        }
-        actualPanel.reset();         
-        cardLayout.show(panel, actualPanel.getClass().getName());
+            actualPanel.reset();         
+            cardLayout.show(panel, actualPanel.getClass().getName());
+        }    
     }
 }

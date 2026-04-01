@@ -1,0 +1,16 @@
+		RICHIESTA RATEIZZAZIONE
+Cliente: Mario Rossi
+Numero di carta: 1234
+Data: 01/04/2026
+
+importo totale rateizzato: 35,00
+Rate: 3
+Tasso interesse: 6.5
+
+		PIANO RATEIZZAZIONE
+--------------------------------------------------
+Scadenza	 Importo 	 Commissione
+--------------------------------------------------
+31/05/2026	11,79		3,00
+30/06/2026	11,79		3,00
+31/07/2026	11,79		3,00

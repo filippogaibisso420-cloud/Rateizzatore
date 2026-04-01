@@ -15,7 +15,7 @@ import javax.swing.JPanel;
  * accedere a tutte le sue funzioni
  */
 public class ClientePanel extends BasePanel implements ActionListener {
-    private Cliente client;
+    private Cliente cliente;
     
     private CardLayout cardLayout;
     private JPanel panel;
@@ -29,23 +29,28 @@ public class ClientePanel extends BasePanel implements ActionListener {
     private AggiungiCartaPanel addCartaPanel;
     private MovimentiPanel movimentiPanel;
     
-    
-    
-    
-    public ClientePanel(MainApp parent, Cliente client) {
+    /**
+     * Costruttore della classe ClientePanel. <br>
+     * Inizializza il pannello principale dedicato al cliente, <br>
+     * impostando il layout e i componenti per la navigazione tra le funzioni.
+     * @param parent il frame principale dell'applicazione
+     * @param cliente il cliente che ha effettuato l'accesso
+     */
+    public ClientePanel(MainApp parent, Cliente cliente) {
         super(parent);
-        this.client = client;
+        this.cliente = cliente;
         setLayout(new BorderLayout());
         cardLayout = new CardLayout(10, 10);
-        panel = new JPanel(cardLayout);
+        
         creaGUI();
         aggiungiListener();
     }
     
     private void creaGUI() {
+        panel = new JPanel(cardLayout);
         JPanel pnlCentro = new JPanel();
         
-        JLabel lblTesto = new JLabel("Benvenuto/a " + client.getNome() + " " + client.getCognome());
+        JLabel lblTesto = new JLabel("Benvenuto/a " + cliente.getNome() + " " + cliente.getCognome());
         lblTesto.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 22));
         
         btnAddAcquisto = new JButton("Registra un acquisto");
@@ -74,32 +79,39 @@ public class ClientePanel extends BasePanel implements ActionListener {
     void reset() {
     }
 
+    /**
+     * Gestisce la navigazione tra i diversi sotto-pannelli <br>
+     * (acquisto, aggiunta carta, visualizzazione movimenti) <br>
+     * in base al pulsante premuto dall'utente.
+     * @param e l'evento generato dall'interazione con i bottoni
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnTorna) {
             parent.tornaAlMenu();
         } else if(e.getSource() == btnAddAcquisto) {
             if(acquistaPanel == null) {
-                acquistaPanel = new AcquistaPanel(parent, client);
+                acquistaPanel = new AcquistaPanel(parent, cliente);
                 panel.add(acquistaPanel.getClass().getName(), acquistaPanel);
             }
-            actualPanel = movimentiPanel;
+            actualPanel = acquistaPanel;
             
         } else if(e.getSource() == btnAggiungiCarta) {
             if(addCartaPanel == null) {
-                addCartaPanel = new AggiungiCartaPanel(parent, client);
+                addCartaPanel = new AggiungiCartaPanel(parent, cliente);
                 panel.add(addCartaPanel.getClass().getName(), addCartaPanel);
             }
             actualPanel = addCartaPanel;
             
         } else if(e.getSource() == btnVisualizzaMovimenti) {
             if(movimentiPanel == null) {
-                movimentiPanel = new MovimentiPanel(parent, client);
+                movimentiPanel = new MovimentiPanel(parent, cliente);
                 panel.add(movimentiPanel.getClass().getName(), movimentiPanel);
             }
             actualPanel = movimentiPanel;
-        } 
-        actualPanel.reset();   
+            parent.setSize(800, 800);
+        }
+        actualPanel.reset();
         cardLayout.show(panel, actualPanel.getClass().getName());
     }
 }

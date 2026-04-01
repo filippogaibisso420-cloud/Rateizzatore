@@ -62,13 +62,21 @@ abstract public class LoginPanel extends BasePanel implements ActionListener, Mo
         clickedPassword = false;
     }
     
+    /**
+     * metodo non implementato
+     * @param e (non gestito)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnTorna) {
-            parent.tornaAlMenu();
-        }
     }
     
+    /**
+     * Gestisce il click del mouse sui campi di testo, <br>
+     * svuotando il testo di default al primo click dell'utente. <br>
+     * nel caso delle password fa sì che il testo inserito dall'utente <br>
+     * sia nascosto.
+     * @param e l'evento generato dal click del mouse
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == txtNome) {

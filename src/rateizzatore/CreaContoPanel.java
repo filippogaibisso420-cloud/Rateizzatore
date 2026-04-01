@@ -30,6 +30,12 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
     private JTextField txtCodiceCarta;
     private JButton btnTorna;
     
+    /**
+     * Costruttore della classe CreaContoPanel. <br>
+     * Configura l'interfaccia grafica per l'inserimento dei dati di un nuovo cliente, <br>
+     * inizializzando i campi di testo e i relativi stati di interazione.
+     * @param parent il frame principale dell'applicazione
+     */
     public CreaContoPanel(MainApp parent) {
         super(parent);
         setLayout(new BorderLayout());
@@ -97,12 +103,16 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
         clickedPlafond = false;
         clickedCodiceCarta = false;
     }
-
+    
+    /**
+     * Gestisce l'acquisizione dei dati inseriti nei campi di testo. <br>
+     * Provvede alla creazione degli oggetti CartaCredito, ContoCorrente e Cliente, <br>
+     * effettuando il parsing dei valori numerici e salvando il nuovo profilo.
+     * @param e l'evento generato dall'interazione con i componenti
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnTorna) {
-            
-        } else {
+        if(e.getSource() != btnTorna) {
             if(txtNome.getText() == null || "A chi verrà intestato questo conto?".equals(txtNome.getText())
                 || password.getPassword() == null 
                 || "Inserire la nuova password del conto".equals(new String(password.getPassword())) 
@@ -135,10 +145,18 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
                     JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    
         CardLayout cardLayout = (CardLayout)this.getParent().getLayout();
         cardLayout.show(this.getParent(), "AMMINISTRATORE");
     }
 
+    /**
+     * Gestisce il click del mouse sui campi di testo, <br>
+     * svuotando il testo di default al primo click dell'utente. <br>
+     * nel caso delle password attiva la protezione dei caratteri <br>
+     * tramite l'impostazione dell'EchoChar.
+     * @param e l'evento generato dal click del mouse
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == txtNome) {
@@ -173,6 +191,7 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
             }
         } 
     }
+    
     /**
      * Metodo non implementato
      * @param e (non considerato)
@@ -204,5 +223,4 @@ public class CreaContoPanel extends BasePanel implements ActionListener, MouseLi
     @Override
     public void mouseExited(MouseEvent e) {
     }
-    
 }

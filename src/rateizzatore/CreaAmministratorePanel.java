@@ -36,6 +36,12 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
     private BasePanel actualPanel;
     private AmministratorePanel adminPanel;
 
+    /**
+     * Costruttore della classe CreaAmministratorePanel. <br>
+     * Inizializza i componenti grafici, i flag di controllo per i campi <br>
+     * di testo e imposta il layout per la registrazione di un nuovo amministratore.
+     * @param parent il frame principale dell'applicazione
+     */
     public CreaAmministratorePanel(MainApp parent) {
         super(parent);
         clickedNome = false;
@@ -45,7 +51,6 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         
         setLayout(new BorderLayout());
         cardLayout = new CardLayout(10, 10);
-        panel = new JPanel(cardLayout);
         creaGUI();
         aggiungiListener();
     }
@@ -68,6 +73,7 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
     }
 
     private void creaGUI() {
+        panel = new JPanel(cardLayout);
         txtNome = new JTextField("Inserire nome e cognome del nuovo dipendente", 30);
         
         password = new JPasswordField("Inserire nuova password:", 30);
@@ -104,6 +110,12 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         passwordBanca.addMouseListener(this);
     }
     
+    /**
+     * Gestisce la logica di registrazione del nuovo amministratore. <br>
+     * Verifica la corrispondenza delle password, valida l'autorizzazione <br>
+     * tramite la password di sistema della banca e salva il nuovo profilo.
+     * @param e l'evento generato dalla pressione dei tasti o dei pulsanti
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnTorna) {
@@ -161,6 +173,13 @@ public class CreaAmministratorePanel extends BasePanel implements ActionListener
         cardLayout.show(panel, actualPanel.getClass().getName());
     }
 
+    /**
+     * Gestisce il click del mouse sui campi di testo, <br>
+     * svuotando il testo di default al primo click dell'utente. <br>
+     * nel caso delle password attiva la protezione dei caratteri <br>
+     * tramite l'impostazione dell'EchoChar.
+     * @param e l'evento generato dal click del mouse
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == txtNome) {

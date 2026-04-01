@@ -22,6 +22,13 @@ public class AmministratorePanel extends BasePanel implements ActionListener {
     private CreaContoPanel creaContoPanel;
     private BasePanel actualPanel;
     
+    /**
+     * Costruttore della classe AmministratorePanel. <br>
+     * Inizializza il pannello principale per le funzioni dell'amministratore, <br>
+     * configurando il layout e l'interfaccia grafica iniziale.
+     * @param parent il frame principale dell'applicazione
+     * @param admin l'amministratore che ha effettuato il login
+     */
     public AmministratorePanel(MainApp parent, Amministratore admin) {
         super(parent);
         this.admin = admin;
@@ -54,6 +61,12 @@ public class AmministratorePanel extends BasePanel implements ActionListener {
     void reset() {
     }
 
+    /**
+     * Gestisce gli eventi generati dai pulsanti del pannello. <br>
+     * Permette di effettuare il log out o di navigare verso <br>
+     * la schermata di creazione di un nuovo conto corrente.
+     * @param e l'evento generato dall'interazione dell'utente
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnTorna) {

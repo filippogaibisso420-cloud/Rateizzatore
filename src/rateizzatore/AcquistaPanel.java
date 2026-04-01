@@ -32,6 +32,12 @@ public class AcquistaPanel extends BasePanel implements ActionListener, MouseLis
     private JTextField txtDescrizione;
     private JButton btnTorna;
     
+    /**
+     * Costruttore della classe AcquistaPanel. <br>
+     * Inizializza l'interfaccia con i campi di testo per l'inserimento dei dati.
+     * @param parent il frame principale dell'applicazione
+     * @param cliente il cliente che sta effettuando il nuovo acquisto
+     */
     public AcquistaPanel(MainApp parent, Cliente cliente) {
         super(parent);
         this.cliente = cliente;
@@ -45,14 +51,14 @@ public class AcquistaPanel extends BasePanel implements ActionListener, MouseLis
         creaGUI();
         aggiungiListener();
     }
+    
     private void creaGUI() {
         JPanel pnlCentro = new JPanel();
         txtCarta = new JTextField("Inserire il codice della carta sulla quale "
-                + "si vuole aggiungere il movimento", 25);
-        txtData = new JTextField("In che data si è fatto l'acquisto?", 25);
-        txtImporto = new JTextField("Inserire l'importo dell'acquisto", 25);
-        txtDescrizione = new JTextField("Inserire una descrizione dell'acquisto:", 25);
-        
+                + "si vuole aggiungere il movimento", 40);
+        txtData = new JTextField("In che data si è fatto l'acquisto?", 40);
+        txtImporto = new JTextField("Inserire l'importo dell'acquisto", 40);
+        txtDescrizione = new JTextField("Inserire una descrizione dell'acquisto:", 40);
         pnlCentro.add(txtCarta);
         pnlCentro.add(txtData);
         pnlCentro.add(txtImporto);
@@ -78,6 +84,7 @@ public class AcquistaPanel extends BasePanel implements ActionListener, MouseLis
         txtImporto.addMouseListener(this);
         txtDescrizione.addMouseListener(this);
     }
+    
     @Override
     void reset() {
         txtCarta.setText("Inserire il codice della carta sulla quale si vuole "
@@ -90,11 +97,19 @@ public class AcquistaPanel extends BasePanel implements ActionListener, MouseLis
         clickedData = false;
         clickedImporto = false;
         clickedDescrizione = false;
+        
+        parent.setSize(500, 400);
     }
 
+    /**
+     * Controlla la validità dei dati inseriti nei campi di testo <br>
+     * e, se corretti, crea il nuovo movimento aggiornando la carta.
+     * @param e l'evento generato dal click sul pulsante
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(txtCarta.getText() == null || "Inserire il codice della carta sulla quale si vuole aggiungere il movimento".equals(txtCarta.getText())
+        if(e.getSource() != btnTorna) {
+            if(txtCarta.getText() == null || "Inserire il codice della carta sulla quale si vuole aggiungere il movimento".equals(txtCarta.getText())
                 || txtData.getText() == null
                 || "In che data si è fatto l'acquisto?".equals(txtData.getText())
                 || txtImporto.getText() == null
@@ -102,49 +117,108 @@ public class AcquistaPanel extends BasePanel implements ActionListener, MouseLis
                 || txtDescrizione.getText() == null
                 || "Inserire una descrizione dell'acquisto:".equals(txtDescrizione.getText())
             ) return;
-        
-        LocalDate dataValuta;
-        try {
-            dataValuta = LocalDate.parse(txtData.getText());    
-        } catch(DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this,
-                        "La data va inserita in formato AAAA-MM-GG",
-                        "Errore inserimento data", JOptionPane.ERROR_MESSAGE);
-            reset();
-            return;
-        }
-        double importo = Double.parseDouble(txtImporto.getText());
-        CartaCredito carta = new CartaCredito(txtCarta.getText());
-        ArrayList<CartaCredito> carte = cliente.getConto().getCarte();
-        if(carte.contains(carta) && dataValuta.isBefore(LocalDate.now()) 
-                && importo > 0) {
-            int i = carte.indexOf(carta);
-            carta = carte.get(i);
-            LocalDate dataContabile = LocalDate.now();
-            Movimento mov = new Movimento(dataContabile, dataValuta, importo, txtDescrizione.getText());
+
+            LocalDate dataValuta;
+            try {
+                dataValuta = LocalDate.parse(txtData.getText());    
+            } catch(DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this,
+                            "La data va inserita in formato AAAA-MM-GG",
+                            "Errore inserimento data", JOptionPane.ERROR_MESSAGE);
+                
+                return;
+            }
+            double importo = Double.parseDouble(txtImporto.getText());
+            CartaCredito carta = new CartaCredito(txtCarta.getText());
+            ArrayList<CartaCredito> carte = cliente.getConto().getCarte();
+            
+            if(carte.contains(carta) && dataValuta.isBefore(LocalDate.now()) 
+                    && importo > 0) {
+                int i = carte.indexOf(carta);
+                carta = carte.get(i);
+                Movimento mov = new Movimento(LocalDate.now(), dataValuta, 
+                        importo, txtDescrizione.getText());
+                carta.aggiungiMovimento(mov);
+                boolean aggiunto = parent.salvaClienti();
+                if(aggiunto) {
+                    JOptionPane.showMessageDialog(this,
+                            "Il movimento è stato aggiunto alla tua carta",
+                            "Acquisto effettuato", JOptionPane.INFORMATION_MESSAGE);
+                }
+                
+            } else {
+                JOptionPane.showMessageDialog(this,
+                            "I dati inseriti non sono corretti",
+                            "Errore inserimento dati", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
         
         CardLayout cardLayout = (CardLayout)this.getParent().getLayout();
         cardLayout.show(this.getParent(), "CLIENTE");
     }
 
+    /**
+     * Gestisce il click del mouse sui campi di testo, <br>
+     * svuotando il testo di default al primo click dell'utente.
+     * @param e l'evento generato dal click del mouse
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+        if(e.getSource() == txtCarta) {
+            if(!clickedCarta) {
+                txtCarta.setText("");
+                clickedCarta = true;
+            }
+            
+        } else if(e.getSource() == txtData) {
+            if(!clickedData) {
+                txtData.setText("");
+                clickedData = true;
+            }
+            
+        } else if(e.getSource() == txtImporto) {
+            if(!clickedImporto) {
+                txtImporto.setText("");
+                clickedImporto = true;
+            }
+            
+        } else if(e.getSource() == txtDescrizione) {
+            if(!clickedDescrizione) {
+                txtDescrizione.setText("");
+                clickedDescrizione = true;
+            }
+        }
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /**
+     * Metodo non implementato
+     * @param e (non considerato)
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }

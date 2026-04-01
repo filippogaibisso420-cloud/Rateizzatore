@@ -10,20 +10,36 @@ abstract public class Utente implements Serializable {
     protected String cognome;
     protected String password;
 
+    /**
+     * Costruttore della classe astratta Utente.<br>
+     * imposta il nome, cognome e password di un utente generico
+     * @param nome il nome dell'utente
+     * @param cognome il cognome dell'utente
+     * @param password la password dell'utente
+     */
     public Utente(String nome, String cognome, String password) {
         this.nome = nome;
         this.cognome = cognome;
         this.password = password;
     }
 
+    /**
+     * @return nome dell'utente 
+     */
     public String getNome() {
         return nome;
     }
 
+    /**
+     * @return cognome dell'utente 
+     */
     public String getCognome() {
         return cognome;
     }
 
+    /**
+     * @return password dell'utente 
+     */
     public String getPassword() {
         return password;
     }

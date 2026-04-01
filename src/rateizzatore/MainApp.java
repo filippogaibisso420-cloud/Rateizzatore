@@ -11,15 +11,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
+/**
+ * Classe principale dell'applicazione. <br>
+ * Gestisce il frame principale, il caricamento e salvataggio dei dati persistenti <br>
+ * (clienti e amministratori) e la navigazione tra le schermate principali.
+ */
 public class MainApp extends JFrame implements ActionListener {
     private JPanel pnlCentro;
     private JButton btnCliente;
@@ -33,6 +37,11 @@ public class MainApp extends JFrame implements ActionListener {
     private LoginAmministratorePanel loginAdminPanel;
     private LoginClientePanel loginClientePanel;
     
+    /**
+     * Costruttore della classe MainApp. <br>
+     * Avvia il caricamento dei database da file, configura la finestra principale <br>
+     * e inizializza il layout e i componenti grafici del menù iniziale.
+     */
     public MainApp() {
         amministratori = caricaAmministratori();
         clienti = caricaClienti();
@@ -46,12 +55,14 @@ public class MainApp extends JFrame implements ActionListener {
         creaGui();
         aggiungiListener();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setVisible(true);
     }
     
     /**
-     * main principale dell'applicazione
-     * @param args
+     * Metodo main principale dell'applicazione. <br>
+     * Istanzia la classe MainApp avviando il programma.
+     * @param args argomenti passati da riga di comando (non si considerano)
      */
     public static void main(String[] args) {
         new MainApp();
@@ -59,12 +70,9 @@ public class MainApp extends JFrame implements ActionListener {
 
     private void creaGui() {
         // nord
-        URL url = getClass().getResource("/img/Logo.png");
-        JLabel lblIconaFoto = new JLabel(new ImageIcon(url));
-        JLabel lblTitolo = new JLabel("Nova Aurum s.p.a.");
+        JLabel lblTitolo = new JLabel("Nova Aurum S.p.A");
         lblTitolo.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 15));
         JPanel pnlNord = new JPanel(); 
-        pnlNord.add(lblIconaFoto);
         pnlNord.add(lblTitolo);
         add(pnlNord, BorderLayout.NORTH);
         
@@ -80,7 +88,10 @@ public class MainApp extends JFrame implements ActionListener {
         add(pnlCentro, BorderLayout.CENTER);
         
         // sud
-        
+        JLabel lblSlogan = new JLabel("NOVA AURUM: Il tuo futuro, il nostro impegno",
+                SwingConstants.CENTER);
+        lblSlogan.setFont(new Font("Verdana", Font.ITALIC, 11));
+        add(lblSlogan, BorderLayout.SOUTH);
     }
 
     private void aggiungiListener() {
@@ -88,6 +99,11 @@ public class MainApp extends JFrame implements ActionListener {
         btnAmministratore.addActionListener(this);
     }
 
+    /**
+     * Gestisce le azioni sui pulsanti del menù iniziale, <br>
+     * indirizzando l'utente verso le schermate di login specifiche.
+     * @param e l'evento generato dall'interazione dell'utente
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnCliente) {
@@ -116,7 +132,7 @@ public class MainApp extends JFrame implements ActionListener {
     private ArrayList<Amministratore> caricaAmministratori() {
         ArrayList<Amministratore> tmpList = new ArrayList<>();
         boolean eof = false;
-        try(FileInputStream fos = new FileInputStream("dati/ListaAmministratori.dat");
+        try(FileInputStream fos = new FileInputStream("dati/database/ListaAmministratori.dat");
                 ObjectInputStream in = new ObjectInputStream(fos);) {
             while(!eof) {
                 tmpList = (ArrayList<Amministratore>) in.readObject();
@@ -142,7 +158,7 @@ public class MainApp extends JFrame implements ActionListener {
     private ArrayList<Cliente> caricaClienti() {
         ArrayList<Cliente> tmpList = new ArrayList<>();
         boolean eof = false;
-        try(FileInputStream fos = new FileInputStream("dati/ListaClienti.dat");
+        try(FileInputStream fos = new FileInputStream("dati/database/ListaClienti.dat");
                 ObjectInputStream in = new ObjectInputStream(fos);) {
             while(!eof) {
                 tmpList = (ArrayList<Cliente>) in.readObject();
@@ -152,7 +168,7 @@ public class MainApp extends JFrame implements ActionListener {
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this,
                         "ci scusiamo per l'inconveniente ma non è stato possibile "
-                                + "recuperare le informazioni sui clienti in questo"
+                                + "recuperare le informazioni sui clienti in questo "
                                 + "momento, riprovare più tardi",
                         "errore caricamento dati",
                         JOptionPane.ERROR_MESSAGE);
@@ -164,7 +180,7 @@ public class MainApp extends JFrame implements ActionListener {
      * metodo che permette di aggiungere <br>
      * un'amministratore
      * @param nuovo l'amministratore da aggiungere
-     * @return valore che indica se l'amministratore è stato aggiunto o meno
+     * @return true se l'amministratore è stato aggiunto e salvato correttamente, false altrimenti
      */
     public boolean aggiungiAmministratore(Amministratore nuovo) {
         boolean aggiunto = false;
@@ -179,7 +195,7 @@ public class MainApp extends JFrame implements ActionListener {
      * metodo che permette di aggiungere <br>
      * un cliente
      * @param nuovo il cliente da aggiungere
-     * @return valore che indica se il cliente è stato aggiunto o meno
+     * @return @return true se il cliente è stato aggiunto e salvato correttamente, false altrimenti
      */
     public boolean aggiungiCliente(Cliente nuovo) {
         boolean aggiunto = false;
@@ -190,8 +206,13 @@ public class MainApp extends JFrame implements ActionListener {
         return aggiunto;
     }
 
-    private boolean salvaAmministratori() {
-        try(FileOutputStream fos = new FileOutputStream("dati/listaAmministratori.dat");
+    /**
+     * Sovrascrive il file di salvataggio degli amministratori <br>
+     * serializzando la lista attualmente in memoria.
+     * @return true se il salvataggio va a buon fine, false in caso di eccezioni
+     */
+    public boolean salvaAmministratori() {
+        try(FileOutputStream fos = new FileOutputStream("dati/database/listaAmministratori.dat");
                 ObjectOutputStream out = new ObjectOutputStream(fos);) {
             
             out.writeObject(amministratori);
@@ -200,15 +221,20 @@ public class MainApp extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,
                         "ci scusiamo per l'inconveniente ma non è possibile "
                                 + "registrare il nuovo amministratore in questo "
-                                + "momento riprovare più tardi",
+                                + " momento riprovare più tardi",
                         "Errore registrazione amministratore",
                         JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
 
-    private boolean salvaClienti() {
-        try(FileOutputStream fos = new FileOutputStream("dati/listaClienti.dat");
+    /**
+     * Sovrascrive il file di salvataggio dei clienti <br>
+     * serializzando la lista attualmente in memoria.
+     * @return true se il salvataggio va a buon fine, false in caso di eccezioni
+     */
+    public boolean salvaClienti() {
+        try(FileOutputStream fos = new FileOutputStream("dati/database/listaClienti.dat");
                 ObjectOutputStream out = new ObjectOutputStream(fos);) {
         
             out.writeObject(clienti);
@@ -224,14 +250,23 @@ public class MainApp extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * @return la lista contenente tutti i clienti 
+     */
     public ArrayList<Cliente> getClienti() {
         return clienti;
     }
 
+    /**
+     * @return la lista contenente tuttigli amministratori
+     */
     public ArrayList<Amministratore> getAmministratori() {
         return amministratori;
     }
     
+    /**
+     * Riporta l'utente al menù principale dell'applicazione 
+     */
     public void tornaAlMenu() {
         cardLayout.show(pnlCentro, "MENU");
     }
